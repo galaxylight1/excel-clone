@@ -205,3 +205,7 @@ body {
     border-bottom: 1px solid lightgray;
     border-right: 1px solid lightgray;
 }
+
+.input-cell.selected {
+    border: 2px solid #217346;
+}
