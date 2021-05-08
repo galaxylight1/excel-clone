@@ -52,6 +52,12 @@ $('.input-cell').dblclick(function(e) {
     $(this).focus();
 });
 
+// blur event 
+
+$('.input-cell').blur(function(e) {
+    $(this).attr('contenteditable', 'false');
+});
+
 // select and unselect cells
 
 function getRowCol(ele) {
@@ -71,12 +77,17 @@ function getNeighbours(rowId, colId) {
 $('.input-cell').click(function(e) {
     let [rowId, colId] = getRowCol(this); // receive multiple vars
     let [topCell, bottomCell, leftCell, rightCell] = getNeighbours(rowId, colId);
-    selectCell(this, e, topCell, bottomCell, leftCell, rightCell);
+    if($(this).hasClass('selected'))
+    {
+        unselectCell(this, e, topCell, bottomCell, leftCell, rightCell);
+    }
+    else selectCell(this, e, topCell, bottomCell, leftCell, rightCell);
 });
 
+// select 
 function selectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
     
-    // Multiple Selection
+    // multiple selection
     if(e.ctrlKey)
     {
         // first, we want to check whether any of the 4 cells (top, bottom, left, right) are selected or not
@@ -117,10 +128,49 @@ function selectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
             rightCell.addClass('left-selected');
         }
     }
-    else
+    else // single selection
     {
         $('.input-cell.selected').removeClass('selected top-selected bottom-selected left-selected right-selected');
     }
 
     $(ele).addClass('selected');
 } 
+
+// unselect
+function unselectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
+    if(e.ctrlKey)
+    {
+        let isTopSelected;
+        let isBottomSelected;
+        let isLeftSelected;
+        let isRightSelected;
+
+        if(topCell) isTopSelected = topCell.hasClass('selected');
+        if(bottomCell) isBottomSelected = bottomCell.hasClass('selected');
+        if(leftCell) isLeftSelected = leftCell.hasClass('selected');
+        if(rightCell) isRightSelected = rightCell.hasClass('selected');
+
+        if(isTopSelected)
+        {
+            topCell.removeClass('bottom-selected');
+        }
+
+        if(isBottomSelected)
+        {
+            bottomCell.removeClass('top-selected');
+        }
+
+        if(isLeftSelected)
+        {
+            leftCell.removeClass('right-selected');
+        }
+
+        if(isRightSelected)
+        {
+            rightCell.removeClass('left-selected');
+        }
+    }
+    
+    $(ele).removeClass('selected top-selected bottom-selected left-selected right-selected');
+}
+
