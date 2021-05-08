@@ -209,3 +209,19 @@ body {
 .input-cell.selected {
     border: 2px solid #217346;
 }
+
+.input-cell.top-selected {
+    border-top: none;
+}
+
+.input-cell.bottom-selected {
+    border-bottom: 1px solid lightgray;
+}
+
+.input-cell.left-selected {
+    border-left: none;
+}
+
+.input-cell.right-selected {
+    border-right: 1px solid lightgray;
+}
