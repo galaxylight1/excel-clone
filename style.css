@@ -140,7 +140,6 @@ body {
     height: 76vh;
     flex-direction: row;
     flex-wrap: wrap;
-    overflow: scroll;
     width: 100vw;
 }
 
@@ -152,33 +151,57 @@ body {
 
 #columns {
     height: 25px;
-    width: calc(100vw - 42px); /* 42px */
+    width: calc(100vw - 25px); /* 42px */
     display: flex;
     flex-direction: row;
-    border: 1px solid lightgray; 
+    border: 1px solid lightgray;
+    overflow: hidden; 
 }
 
 #rows {
     width: 25px;
-    height: calc(76vh - 42px);
+    height: calc(76vh - 25px);
     border: 1px solid lightgray;
+    overflow: hidden;
 }
 
 #cells {
-    width: calc(100vw - 42px);
-    height: calc(76vh - 42px);
+    position: relative; /* for perfect scrollbar */
+    width: calc(100vw - 25px);
+    height: calc(76vh - 25px);
     border: 1px solid lightgray;
+    overflow: scroll;
 }
 
 .column-name {
-    min-width: 60px;
-    width: 60px;
+    min-width: 100px;
+    width: 100px;
     border-right: 1px solid lightgray;
-    border-left: 1px solid lightgray;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 600;
 }
 
+.row-name {
+    min-height: 25px;
+    height: 25px;
+    border-bottom: 1px solid lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+
+.cell-row {
+    display: flex;
+}
+
+.input-cell {
+    min-width: 100px;
+    width: 100px;
+    min-height: 25px;
+    height: 25px;
+    border-bottom: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+}
