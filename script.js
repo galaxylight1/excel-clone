@@ -42,14 +42,14 @@ for(let i = 1; i <= 100; i++)
             'text': '',
             'bold': false,
             'italic': false,
-            'underline': false,
+            'underlined': false,
             'alignment': 'left',
             'color': '',
             'bgcolor': '',
         });
-
-        cellData.push(rowArray);
     }
+
+    cellData.push(rowArray);
     $('#cells').append(row);
 }
 
