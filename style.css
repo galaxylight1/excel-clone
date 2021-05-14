@@ -180,7 +180,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: 600;
+    font-weight: bold;
 }
 
 .row-name {
@@ -190,7 +190,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: 600;
+    font-weight: bold;
 }
 
 .cell-row {
@@ -234,4 +234,12 @@ body {
 
 .input-cell.right-selected {
     border-right: 1px solid lightgray;
+}
+
+.menu-icon.selected {
+    background-color: lightgray;
+}
+
+.input-cell:hover {
+    /* cursor: cell; */
 }

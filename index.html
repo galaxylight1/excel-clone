@@ -45,7 +45,7 @@
             <select class="menu-selector" id="font-size">
                 <option value="10">10</option>
                 <option value="12">12</option>
-                <option value="14">14</option>
+                <option value="14" selected>14</option>
                 <option value="16">16</option>
                 <option value="18">18</option>
                 <option value="20">20</option>
@@ -57,14 +57,14 @@
                 <option value="32">32</option>
             </select>
 
-            <div class="material-icons menu-icon">format_bold</div>
-            <div class="material-icons menu-icon">format_italic</div>
-            <div class="material-icons menu-icon">format_underlined</div>
+            <div class="material-icons menu-icon" id="bold">format_bold</div>
+            <div class="material-icons menu-icon" id="italic">format_italic</div>
+            <div class="material-icons menu-icon" id="underlined">format_underlined</div>
             <div class="material-icons menu-icon">format_color_fill</div>
             <div class="material-icons menu-icon">format_color_text</div>
-            <div class="material-icons menu-icon">format_align_left</div>
-            <div class="material-icons menu-icon">format_align_center</div>
-            <div class="material-icons menu-icon">format_align_right</div>
+            <div class="material-icons menu-icon alignment selected" data-type="left">format_align_left</div>
+            <div class="material-icons menu-icon alignment" data-type="center">format_align_center</div>
+            <div class="material-icons menu-icon alignment" data-type="right">format_align_right</div>
         </div>
 
         <div class="formula-bar">

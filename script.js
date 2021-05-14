@@ -27,12 +27,28 @@ for(let i = 1; i <= 100; i++)
     $('#rows').append(`<div class="row-name">${i}</div>`);
 }
 
+let cellData = []; // array storing info of each cell in form of an object
+
 for(let i = 1; i <= 100; i++)
 {
     let row = $('<div class="cell-row"></div>'); // createElement using jQuery
+    let rowArray = [];
     for(let j = 1; j <= 100; j++)
     {
         row.append(`<div id="row-${i}-col-${j}" class="input-cell" contenteditable="false"></div>`);
+        rowArray.push({
+            'font-family': 'Noto Sans',
+            'font-size': 14,
+            'text': '',
+            'bold': false,
+            'italic': false,
+            'underline': false,
+            'alignment': 'left',
+            'color': '',
+            'bgcolor': '',
+        });
+
+        cellData.push(rowArray);
     }
     $('#cells').append(row);
 }
@@ -48,6 +64,7 @@ $('#cells').scroll(function(e) {
 
 $('.input-cell').dblclick(function(e) {
     $('.input-cell.selected').removeClass('selected');
+    $(this).addClass('selected');
     $(this).attr('contenteditable', 'true');
     $(this).focus();
 });
@@ -74,6 +91,8 @@ function getNeighbours(rowId, colId) {
     return [topCell, bottomCell, leftCell, rightCell];
 }
 
+// click event
+
 $('.input-cell').click(function(e) {
     let [rowId, colId] = getRowCol(this); // receive multiple vars
     let [topCell, bottomCell, leftCell, rightCell] = getNeighbours(rowId, colId);
@@ -85,6 +104,7 @@ $('.input-cell').click(function(e) {
 });
 
 // select 
+
 function selectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
     
     // multiple selection
@@ -134,11 +154,33 @@ function selectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
     }
 
     $(ele).addClass('selected');
+    changeHeader(getRowCol(ele));
 } 
+
+function changeHeader([rowId, colId]) {
+    let data = cellData[rowId - 1][colId - 1]; // o(1) 
+    $('.alignment.selected').removeClass('selected');
+    $(`.alignment[data-type="${data.alignment}"]`).addClass('selected'); // get using html attribute
+
+    addRemoveSelectFromFontStyle(data, 'bold');
+    addRemoveSelectFromFontStyle(data, 'italic');
+    addRemoveSelectFromFontStyle(data, 'underlined');
+}
+
+function addRemoveSelectFromFontStyle(data, property) {
+    if(data[property])
+    {
+        $(`#${property}`).addClass('selected');
+    }
+    else 
+    {
+        $(`#${property}`).removeClass('selected');
+    }
+}
 
 // unselect
 function unselectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
-    if(e.ctrlKey)
+    if(e.ctrlKey /*|| isMouseSelectionFinished*/)
     {
         let isTopSelected;
         let isBottomSelected;
@@ -174,3 +216,98 @@ function unselectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
     $(ele).removeClass('selected top-selected bottom-selected left-selected right-selected');
 }
 
+// select using mouse scroll
+
+// let isMouseSelectionFinished = false;
+// let isStartCellSelected = false;
+// let startCell = {};
+// let endCell = {};
+
+// $('.input-cell').mousemove(function(e) {
+//     e.preventDefault();
+//     if(e.buttons === 1)
+//     {
+//         if(!isStartCellSelected)
+//         {
+//             let [rowId, colId] = getRowCol(this);
+//             startCell = {'rowId': rowId, 'colId': colId};
+//             isStartCellSelected = true;
+//             let [topCell, bottomCell, leftCell, rightCell] = getNeighbours(rowId, colId);
+//             selectCell($(`#row-${rowId}-col-${colId}`)[0], {'ctrlKey': true}, topCell, bottomCell, leftCell, rightCell);
+//         }
+//     }
+// });
+
+// $('.input-cell').mouseup(function(e) {
+//     // reset
+//     isStartCellSelected = false;  
+//     isMouseSelectionFinished = true;
+// });
+
+// $('.input-cell').mouseenter(function(e) {
+//     if(e.buttons === 1) // left click
+//     {
+//        let [rowId, colId] = getRowCol(this);
+//        endCell = {'rowId': rowId, 'colId': colId};
+//        selectAllBetweenCells(startCell, endCell); 
+//     }
+// });
+
+// select cells between start and end
+
+function selectAllBetweenCells(start, end) {
+    $('.input-cell.selected').removeClass('selected top-selected bottom-selected left-selected right-selected');
+    
+    for(let i = Math.min(start.rowId, end.rowId); i <= Math.max(start.rowId, end.rowId); i++)
+    {
+        for(let j = Math.min(start.colId, end.colId); j <= Math.max(start.colId, end.colId); j++)
+        {
+            let [topCell, bottomCell, leftCell, rightCell] = getNeighbours(i, j);
+            selectCell($(`#row-${i}-col-${j}`)[0], {'ctrlKey': true}, topCell, bottomCell, leftCell, rightCell);
+        }
+    }
+}
+
+$('.alignment').click(function(e) {
+    let alignment = $(this).attr('data-type');
+    $('.alignment.selected').removeClass('selected');
+    $(this).addClass('selected');
+    $('.input-cell.selected').css('text-align', alignment);
+    $('.input-cell.selected').each(function(index, data) {
+        let [rowId, colId] = getRowCol(data);
+        cellData[rowId-1][colId-1].alignment = alignment;
+    });
+});
+
+$('#bold').click(function(e) {
+    setStyle(this, 'bold', 'font-weight', 'bold');
+});
+
+$('#italic').click(function(e) {
+    setStyle(this, 'italic', 'font-style', 'italic');
+});
+
+$('#underlined').click(function(e) {
+    setStyle(this, 'underlined', 'text-decoration', 'underline');
+});
+
+function setStyle(ele, property, key, value) {
+    if($(ele).hasClass('selected'))
+    {
+        $(ele).removeClass('selected');
+        $('.input-cell.selected').css(key, ''); // css removed
+        $('.input-cell.selected').each(function(index, data) {
+            let [rowId, colId] = getRowCol(data);
+            cellData[rowId-1][colId-1][property] = false;
+        });
+    }
+    else 
+    {
+        $(ele).addClass('selected');
+        $('.input-cell.selected').css(key, value);
+        $('.input-cell.selected').each(function(index, data) {
+            let [rowId, colId] = getRowCol(data);
+            cellData[rowId-1][colId-1][property] = true;
+        });
+    }
+}
