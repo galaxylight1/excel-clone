@@ -29,11 +29,11 @@ for(let i = 1; i <= 100; i++)
 
 let cellData = []; // array storing info of each cell in form of an object
 
-for(let i = 1; i <= 100; i++)
+for(let i = 1; i <= 50; i++)
 {
     let row = $('<div class="cell-row"></div>'); // createElement using jQuery
     let rowArray = [];
-    for(let j = 1; j <= 100; j++)
+    for(let j = 1; j <= 50; j++)
     {
         row.append(`<div id="row-${i}-col-${j}" class="input-cell" contenteditable="false"></div>`);
         rowArray.push({
@@ -104,7 +104,6 @@ $('.input-cell').click(function(e) {
 });
 
 // select 
-
 function selectCell(ele, e, topCell, bottomCell, leftCell, rightCell) {
     
     // multiple selection
@@ -311,3 +310,31 @@ function setStyle(ele, property, key, value) {
         });
     }
 }
+
+$(".pick-color").colorPick({
+    'initialColor':'#fff',
+    'allowRecent': true,
+    'recentMax': 5,
+    'allowCustomColor': true,
+    'palette': ["#1abc9c", "#16a085", "#2ecc71", "#27ae60", "#3498db", "#2980b9", "#9b59b6", "#8e44ad", "#34495e", "#2c3e50", "#f1c40f", "#f39c12", "#e67e22", "#d35400", "#e74c3c", "#c0392b", "#ecf0f1", "#bdc3c7", "#95a5a6", "#7f8c8d"],
+    'onColorSelected': function() {
+        if($(this.element.children()[1]).attr('id') == 'fill-color')
+        {
+            $('#fill-color').css('border-bottom', `4px solid ${this.color}`);
+            $('.input-cell.selected').css('background-color', this.color);
+        }
+        else 
+        {
+            $('#text-color').css('border-bottom', `4px solid ${this.color}`);
+            $('.input-cell.selected').css('color', this.color);
+        }
+    }
+});
+
+$('#fill-color').click(function(e) {
+    setTimeout(() => {$(this).parent().click();}, 10); // this in arrow function refers to outer this
+});
+
+$('#text-color').click(function(e) {
+    setTimeout(() => {$(this).parent().click();}, 10);
+});
