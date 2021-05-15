@@ -44,8 +44,8 @@ for(let i = 1; i <= 50; i++)
             'italic': false,
             'underlined': false,
             'alignment': 'left',
-            'color': '',
-            'bgcolor': '',
+            'color': '#444',
+            'bgcolor': '#fff',
         });
     }
 
@@ -164,6 +164,12 @@ function changeHeader([rowId, colId]) {
     addRemoveSelectFromFontStyle(data, 'bold');
     addRemoveSelectFromFontStyle(data, 'italic');
     addRemoveSelectFromFontStyle(data, 'underlined');
+
+    $('#fill-color').css('border-bottom', `4px solid ${data.bgcolor}`);
+    $('#text-color').css('border-bottom', `4px solid ${data.color}`);
+    $('#font-family').val(data['font-family']);
+    $('#font-family').css('font-family', data['font-family']);
+    $('#font-size').val(data['font-size']);
 }
 
 function addRemoveSelectFromFontStyle(data, property) {
@@ -312,7 +318,7 @@ function setStyle(ele, property, key, value) {
 }
 
 $(".pick-color").colorPick({
-    'initialColor':'#fff',
+    'initialColor':'#444',
     'allowRecent': true,
     'recentMax': 5,
     'allowCustomColor': true,
@@ -322,11 +328,23 @@ $(".pick-color").colorPick({
         {
             $('#fill-color').css('border-bottom', `4px solid ${this.color}`);
             $('.input-cell.selected').css('background-color', this.color);
+
+            // update
+            $('.input-cell.selected').each((index, data) => {
+                let [rowId, colId] = getRowCol(data);
+                cellData[rowId - 1][colId - 1].bgcolor = this.color;
+            });
         }
         else 
         {
             $('#text-color').css('border-bottom', `4px solid ${this.color}`);
             $('.input-cell.selected').css('color', this.color);
+
+            // update
+            $('.input-cell.selected').each((index, data) => {
+                let [rowId, colId] = getRowCol(data);
+                cellData[rowId - 1][colId - 1].color = this.color;
+            });
         }
     }
 });
@@ -337,4 +355,25 @@ $('#fill-color').click(function(e) {
 
 $('#text-color').click(function(e) {
     setTimeout(() => {$(this).parent().click();}, 10);
+});
+
+$('.menu-selector').change(function(e) {
+    let value = $(this).val();
+    let key = $(this).attr('id');
+    if(key == 'font-family')
+    {
+        $('#font-family').css(key, value);
+    }
+
+    if(!isNaN(value)) // '20' converted to 20 and then checked
+    {
+        value = parseInt(value);
+    }
+
+    $('.input-cell.selected').css(key, value);
+
+    $('.input-cell.selected').each((index, data) => {
+        let [rowId, colId] = getRowCol(data);
+        cellData[rowId - 1][colId - 1][key] = value;
+    });
 });
