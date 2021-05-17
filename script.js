@@ -28,10 +28,12 @@ for(let i = 1; i <= 100; i++)
 }
 
 let cellData = {
-    'Sheet1': {}
+    'Sheet 1': {}
 };
 
-let selectedSheet = 'Sheet1';
+let selectedSheet = 'Sheet 1';
+let totalSheets = 1;
+let lastlyAddedSheet = 1;
 
 let defaultProperties = {
     'font-family': 'Noto Sans',
@@ -397,6 +399,7 @@ $('.menu-selector').change(function(e) {
     updateCellData(key, value);
 });
 
+// Optimizing storage of cell data
 function updateCellData(property, value) {
     if(value != defaultProperties[property]) 
     {
@@ -438,3 +441,57 @@ function updateCellData(property, value) {
         });
     }
 }
+
+$('.sheet-tab').on('contextmenu', function(e) {
+    e.preventDefault();
+    $('.sheet-options-modal').remove();
+
+    let modal = $(`<div class="sheet-options-modal">
+            <div class="option sheet-rename">Rename</div>
+            <div class="option sheet-delete">Delete</div>
+        </div>`);
+
+    modal.css({'left': e.pageX});
+    $('.sheet-bar').append(modal);
+});
+
+// $('.add-sheet').click(function(e) {
+//     lastlyAddedSheet++;
+// $('.sheet-tab.container').append(`<div class="sheet-tab selected">Sheet ${lastlyAddedSheet}</div>`);
+// });
+
+// $('.sheet-tab').click(function (e) {
+//     $('.sheet-tab.selected').removeClass('selected');
+//     $(e.target).addClass('selected');
+
+//     emptyPreviousSheet();
+//     selectedSheet = $(this).text();
+//     console.log(selectedSheet);
+// });
+
+// function emptyPreviousSheet() {
+//     console.log(cellData);
+//     let data = cellData[selectedSheet];
+//     let rowKeys = Object.keys(data);
+//     for(let i of rowKeys)
+//     {
+//         let colKeys = Object.keys(cellData[selectedSheet][i]);
+//         for(let j of colKeys)
+//         {
+//             let cell = $(`#row-${parseInt(i)}-col-${parseInt(j)}`);
+
+//             // only changed on UI, css reset
+//             cell.text(''); 
+//             cell.css({
+//                 'font-family': 'Noto Sans',
+//                 'font-size': '14px',
+//                 'background-color': '#fff',
+//                 'color': '#444',
+//                 'font-weight': '',
+//                 'font-style': '',
+//                 'text-decoration': '',
+//                 'text-align': 'left'
+//             });
+//         }
+//     } 
+// }

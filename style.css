@@ -13,6 +13,7 @@ body {
     color: #444;
     height: 100vh;
     font-family: sans-serif;
+    position: relative;
 }
 
 .title {
@@ -139,7 +140,7 @@ body {
 
 .data-container {
     display: flex;
-    height: 76vh;
+    height: 75vh;
     flex-direction: row;
     flex-wrap: wrap;
     width: 100vw;
@@ -162,7 +163,7 @@ body {
 
 #rows {
     width: 25px;
-    height: calc(76vh - 25px);
+    height: calc(75vh - 25px);
     border: 1px solid lightgray;
     overflow: hidden;
 }
@@ -170,7 +171,7 @@ body {
 #cells {
     position: relative; /* for perfect scrollbar */
     width: calc(100vw - 25px);
-    height: calc(76vh - 25px);
+    height: calc(75vh - 25px);
     border: 1px solid lightgray;
     overflow: scroll;
 }
@@ -269,3 +270,77 @@ body {
   }
   
   .colorPickSelector:hover { transform: scale(1.1); }
+
+.sheet-bar {
+    display: flex;
+    height: 4vh;
+    width: 100vw;
+    align-items: center;
+
+    padding-top: 5px;
+}
+
+.sheet-scroller {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.sheet-tab-container {
+    display: flex;
+    border-left: 0.5px solid lightgray;
+    overflow: scroll; 
+
+    -ms-overflow-style: none; 
+    scrollbar-width: none;  
+    
+    margin-left: 10px;
+  }
+
+.sheet-tab-container::-webkit-scrollbar {
+    display: none;
+}
+
+.sheet-tab {
+    /* display: flex; */
+    /* justify-content: center; */
+    padding-left: 10px;
+    padding-right: 10px;
+    border-right: 1px solid lightgray;
+    font-weight: 600;
+    /* height: 4vh; */
+    font-size: 14px;
+
+    padding-top: 4px;
+}
+
+.sheet-tab.selected {
+    color: #217346;
+    border-bottom: 5px solid #217346;
+}
+
+.sheet-tab:hover {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.add-sheet {
+    color: #217346;
+}
+
+.sheet-options-modal {
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 4px 4px 8px 0 lightgray;
+    bottom: 4vh;
+    left: 200px;
+}
+
+.option {
+    padding: 7px 15px 7px 15px;
+}
+
+.option:hover {
+    background-color: lightgray;
+    cursor: default;
+}
