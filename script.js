@@ -442,22 +442,60 @@ function updateCellData(property, value) {
     }
 }
 
-// attaching event listeners on Sheet 1 (default)
+$('.container').click(function(e) {
+    if(e.target.classList[0] !== 'option')
+    {
+        $('.sheet-options-modal').remove();
+    }
+});
+
+// attaching event listeners to HTML elements 
 function addSheetEvents() {
     $('.sheet-tab.selected').on('contextmenu', function(e) {
         e.preventDefault();
+
+        if(!$(this).hasClass('selected'))
+        {
+            $('.sheet-tab.selected').removeClass('selected');
+            $(this).addClass('selected');
+            selectSheet();
+        }
+
         $('.sheet-options-modal').remove();
     
         let modal = $(`<div class="sheet-options-modal">
                 <div class="option sheet-rename">Rename</div>
                 <div class="option sheet-delete">Delete</div>
-            </div>`);
+        </div>`);
     
         modal.css({'left': e.pageX});
         $('.sheet-bar').append(modal);
+        
+        $('.sheet-rename').click(function(e) {
+            let renameModal = $(`<div class="sheet-modal-parent">
+            <div class="sheet-rename-modal">
+                    <div class="sheet-modal-title">Rename Sheet</div>
+                    <div class="sheet-modal-input-container">
+                        <span class="sheet-modal-input-title">Rename to:</span>
+                        <input class="sheet-modal-input" type="text" />
+                    </div>
+                    <div class="sheet-modal-confirmation">
+                        <div class="button yes-button">OK</div>
+                        <div class="button no-button">Cancel</div>
+                    </div>
+            </div>`);
+
+            $('.sheet-options-modal').remove();
+            $('.container').append(renameModal);
+            
+            $('.no-button').click(() => {$('.sheet-modal-parent').remove()});
+
+            $('.yes-button').click(renameSheet);
+        });
     });
 
     $('.sheet-tab.selected').click(function (e) {
+        if($(this).hasClass('selected')) return;
         $('.sheet-tab.selected').removeClass('selected');
         $(this).addClass('selected');
         selectSheet();
@@ -476,7 +514,7 @@ $('.add-sheet').click(function(e) {
     $('.sheet-tab.selected').removeClass('selected');
     $('.sheet-tab:last-child').addClass('selected');
     addSheetEvents(); // adding event listeners on newly added sheet
-    
+
     selectSheet();
 });
 
@@ -484,6 +522,7 @@ function selectSheet() {
     emptyPreviousSheet();
     selectedSheet = $('.sheet-tab.selected').text();
     loadCurrentSheet();
+    if(!$('#row-1-col-1').hasClass('selected')) $('#row-1-col-1').click(); // resets header as well
 }
 
 function emptyPreviousSheet() {
@@ -533,5 +572,22 @@ function loadCurrentSheet() {
                 'text-align': cellData[selectedSheet][i][j].alignment
             });
         }
+    }
+}
+
+function renameSheet() {
+    let newSheetName = $('.sheet-modal-input').val();
+    if(newSheetName && !Object.keys(cellData).includes(newSheetName))
+    {
+        cellData[newSheetName] = cellData[selectedSheet];
+        delete cellData[selectedSheet];
+        selectedSheet = newSheetName;
+        $('.sheet-tab.selected').text(newSheetName);
+        $('.sheet-modal-parent').remove();
+    }
+    else
+    {
+        $('.rename-error').remove();
+        $('.sheet-modal-input-container').append(`<div class="rename-error">* Sheet Name is not valid or Sheet already exists!</div>`)
     }
 }
