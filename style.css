@@ -326,6 +326,7 @@ body {
 
 .add-sheet {
     color: #217346;
+    cursor: pointer;
 }
 
 .sheet-options-modal {
