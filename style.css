@@ -19,16 +19,17 @@ body {
 .title {
     background-color: #217346;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.95rem;
     padding: 0.5rem;
-    height: 5vh;
+    height: 4.5vh;
     color: #fff;
 }
 
 .menu-bar {
     display: flex;
     flex-direction: row;
-    height: 5vh;
+    font-size: 0.95rem;
+    height: 4.5vh;
     background-color: #217346;
 }
 
@@ -55,7 +56,7 @@ body {
 .menu-icon-bar {
     display: flex;
     flex-direction: row;
-    height: 6vh;
+    height: 6.2vh;
     align-items: center;
 }
 
@@ -140,7 +141,7 @@ body {
 
 .data-container {
     display: flex;
-    height: 75vh;
+    height: 76vh;
     flex-direction: row;
     flex-wrap: wrap;
     width: 100vw;
@@ -163,7 +164,7 @@ body {
 
 #rows {
     width: 25px;
-    height: calc(75vh - 25px);
+    height: calc(76vh - 25px);
     border: 1px solid lightgray;
     overflow: hidden;
 }
@@ -171,7 +172,7 @@ body {
 #cells {
     position: relative; /* for perfect scrollbar */
     width: calc(100vw - 25px);
-    height: calc(75vh - 25px);
+    height: calc(76vh - 25px);
     border: 1px solid lightgray;
     overflow: scroll;
 }
@@ -460,8 +461,8 @@ body {
     width: 50vw;
     display: flex;
     
-    opacity: 0.97;
-    box-shadow: 1px 1px 1px 0 rgb(192, 192, 192);
+    opacity: 0.99;
+    box-shadow: 1px 1px 25px 0 rgb(148, 148, 148);
 }
 
 .file-options-modal {
@@ -486,7 +487,7 @@ body {
     padding-top: 5px;
     padding-bottom: 5px;
     width: 100%;
-    font-size: 20px;
+    font-size: 18.3px;
     justify-content: center; /* text-align: center */
     position: relative; /* give relative to parent */
 }
@@ -498,7 +499,8 @@ body {
 
 .close-icon, .new-icon, .open-icon, .save-icon {
     position: absolute;
-    left: 1rem;
+    left: 2rem;
+    font-size: 1.4rem;
 }
 
 .close-icon {
