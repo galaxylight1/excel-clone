@@ -543,6 +543,7 @@ $('.add-sheet').click(function(e) {
     addSheetEvents(); // adding event listeners on newly added sheet
 
     selectSheet();
+    $('.sheet-tab.selected')[0].scrollIntoView();
 });
 
 function selectSheet() {
@@ -631,8 +632,6 @@ function renameSheet() {
     }
 }
 
-// TODO: refactor
-
 function deleteSheet() {
     $('.sheet-modal-parent').remove();
     
@@ -661,3 +660,64 @@ function deleteSheet() {
     delete cellData[currSelectedSheet.text()];
     totalSheets--;
 }
+
+// left and right scrollers 
+
+$('.left-scroller,.right-scroller').click(function(e) {
+    let keysArr = Object.keys(cellData);
+    let selectedSheetIdx = keysArr.indexOf(selectedSheet);
+
+    let currSelectedSheet = $('.sheet-tab.selected');
+    if($(this).text() == 'arrow_left' && selectedSheetIdx != 0)
+    {
+        let prev = currSelectedSheet.prev()[0];
+        $(prev).addClass('selected');
+        currSelectedSheet.removeClass('selected');
+        selectSheet();
+        $('.sheet-tab.selected')[0].scrollIntoView();
+    }
+    else if($(this).text() == 'arrow_right' && selectedSheetIdx != keysArr.length-1)
+    {
+        let nxt = currSelectedSheet.next()[0]; // get HTML element from jQuery object
+        $(nxt).addClass('selected');
+        currSelectedSheet.removeClass('selected');
+        selectSheet();
+        $('.sheet-tab.selected')[0].scrollIntoView();
+    }
+});
+
+$('#menu-file').click(function(e) {
+    let fileModal = $(`<div class="file-modal">
+        <div class="file-options-modal">
+            <div class="close">
+                <div class="material-icons close-icon">arrow_circle_down</div>
+                <span>Close</span>
+            </div>
+            <div class="new">
+                <div class="material-icons new-icon">insert_drive_file</div>
+                <span>New</span>
+            </div>
+            <div class="open">
+                <div class="material-icons open-icon">folder_open</div>
+                <span>Open</span>
+            </div>
+            <div class="save">
+                <div class="material-icons save-icon">save</div>
+                <span>Save</span>
+            </div>
+        </div>
+        <div class="file-recent-modal"></div>
+    </div>`);
+
+    $('.container').append(fileModal);
+    fileModal.animate({
+        left: '0'
+    },  'slow');
+
+    $('.close').click(function(e) { // add this event listener after append fileModal to DOM
+        fileModal.animate({
+            left: '-50vw'
+        }, 'slow');
+        setTimeout(() => fileModal.remove(), 700);
+    });
+});
