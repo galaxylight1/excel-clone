@@ -712,12 +712,12 @@ $('#menu-file').click(function(e) {
     $('.container').append(fileModal);
     fileModal.animate({
         left: '0'
-    },  'slow');
+    },  500);
 
     $('.close').click(function(e) { // add this event listener after append fileModal to DOM
         fileModal.animate({
             left: '-50vw'
-        }, 'slow');
-        setTimeout(() => fileModal.remove(), 700);
+        }, 500);
+        setTimeout(() => fileModal.remove(), 593);
     });
 });
