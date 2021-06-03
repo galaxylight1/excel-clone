@@ -18,11 +18,20 @@ body {
 
 .title {
     background-color: #217346;
-    text-align: center;
     font-size: 0.95rem;
     padding: 0.5rem;
     height: 4.5vh;
     color: #fff;
+    
+    display: flex;
+    justify-content: center;
+}
+
+.title-name {
+    /* width: 9rem; */
+    height: 1.12rem;
+    text-align: center;
+    outline: none;
 }
 
 .menu-bar {
@@ -510,4 +519,17 @@ body {
 .close:hover, .new:hover, .open:hover, .save:hover {
     background-color: #1e663f;
     cursor: pointer;
+}
+
+.popup {
+    background-color: #ffcacab3;
+    position: absolute;
+    bottom: 3rem;
+    right: 2rem;
+    height: 3rem;
+    width: 10rem;
+    border-radius: 8px;
+    font-size: 10px;
+    padding: 12px;
+    text-align: center;
 }

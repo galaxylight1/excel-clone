@@ -506,6 +506,16 @@ function addSheetEvents() {
         });
 
         $('.sheet-delete').click(function(e) {
+            $('.sheet-options-modal').remove();
+
+            let keysArr = Object.keys(cellData);
+
+            if(keysArr.length == 1) 
+            {
+                sendPopUpError('This sheet cannot be deleted!');
+                return;
+            }
+            
             let deleteModal = `<div class="sheet-modal-parent">
             <div class="sheet-delete-modal">
                 <div class="sheet-modal-title">${ selectedSheet }</div>
@@ -522,7 +532,6 @@ function addSheetEvents() {
             </div>
             </div>`;
 
-            $('.sheet-options-modal').remove();
             $('.container').append(deleteModal);
 
             $('.no-button').click(() => {$('.sheet-modal-parent').remove()});
@@ -742,7 +751,7 @@ $('#menu-file').click(function(e) {
         {
             let saveModal = `<div class="sheet-modal-parent">
                 <div class="sheet-delete-modal">
-                    <div class="sheet-modal-title">${ $('.title').text() }</div>
+                    <div class="sheet-modal-title">${ $('.title-name').text() }</div>
                     <div class="sheet-modal-detail-container">
                         <span class="sheet-modal-detail-title">Do you want to save changes?</span>
                     </div>
@@ -757,7 +766,10 @@ $('#menu-file').click(function(e) {
             $('.container').append(saveModal);
             
             $('.yes-button').click(function() {
-                // save
+                $('.sheet-modal-parent').remove();
+                saveFile();
+                newFile();
+                $('.close').click();
             });
             
             $('.no-button').click(function() {
@@ -767,6 +779,8 @@ $('#menu-file').click(function(e) {
             });
         }
     });
+
+    $('.save').click(saveFile);
 });
 
 function newFile() {
@@ -778,6 +792,48 @@ function newFile() {
     selectedSheet = 'Sheet 1';
     totalSheets = 1;
     lastlyAddedSheet = 1;
-    $('.title').text('Untitled - Excel');
+    $('.title-name').text('Untitled - Excel');
     $('#row-1-col-1').click();
+}
+
+function saveFile() {   
+    let a = document.createElement('a');
+    a.href = `data:application/json,${ encodeURIComponent(JSON.stringify(cellData, null, '\t')) }`;
+    a.download = $('.title-name').text() + '.json';
+    $('.container').append(a);
+    a.click();
+    a.remove();
+    save = true;
+}
+
+let lastTitle = 'Book 1 - Excel';
+
+$('.title-name').click(function(e) {
+    $(this).attr('contenteditable', 'true');
+    $(this).css('border-bottom', '1.8px solid #ebebeb');
+});
+
+$('.title-name').blur(function(e) {
+    if($(this).text().length == 0) 
+    {
+        sendPopUpError('Please enter a valid name!');
+        $('.title-name').text(lastTitle);
+        return;
+    } 
+    $(this).attr('contenteditable', 'false');
+    $(this).css('border-bottom', '');
+    lastTitle = $(this).text();
+});
+
+function sendPopUpError(text) {
+    let popup = $(`<div class="popup">
+        ${text}
+    </div>`);
+
+    $('.container').append(popup);
+    popup.animate({
+        opacity: '0'
+    },  4000);
+
+    setTimeout(() => popup.remove(), 5000);
 }
