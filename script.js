@@ -34,6 +34,7 @@ let cellData = {
 let selectedSheet = 'Sheet 1';
 let totalSheets = 1;
 let lastlyAddedSheet = 1;
+let save = true;
 
 let defaultProperties = {
     'font-family': 'Noto Sans',
@@ -401,6 +402,8 @@ $('.menu-selector').change(function(e) {
 
 // Optimizing storage of cell data
 function updateCellData(property, value) {
+    let currCellData = JSON.stringify(cellData);
+
     if(value != defaultProperties[property]) 
     {
         $('.input-cell.selected').each(function(index, data) {
@@ -439,6 +442,12 @@ function updateCellData(property, value) {
                 }
             }
         });
+    }
+
+    // checking if there is any change 
+    if(save && currCellData != JSON.stringify(cellData))
+    {
+        save = false;
     }
 }
 
@@ -499,7 +508,7 @@ function addSheetEvents() {
         $('.sheet-delete').click(function(e) {
             let deleteModal = `<div class="sheet-modal-parent">
             <div class="sheet-delete-modal">
-                <div class="sheet-modal-title">Sheet Name</div>
+                <div class="sheet-modal-title">${ selectedSheet }</div>
                 <div class="sheet-modal-detail-container">
                     <span class="sheet-modal-detail-title">Are you sure?</span>
                 </div>
@@ -532,6 +541,7 @@ function addSheetEvents() {
 addSheetEvents();
 
 $('.add-sheet').click(function(e) {
+    save = false;
     lastlyAddedSheet++;
     totalSheets++;
     cellData[`Sheet ${lastlyAddedSheet}`] = {};
@@ -604,6 +614,7 @@ function loadCurrentSheet() {
 }
 
 function renameSheet() {
+    save = false;
     let newSheetName = $('.sheet-modal-input').val();
     if(newSheetName && !Object.keys(cellData).includes(newSheetName))
     {
@@ -712,12 +723,61 @@ $('#menu-file').click(function(e) {
     $('.container').append(fileModal);
     fileModal.animate({
         left: '0'
-    },  500);
+    },  350);
 
     $('.close').click(function(e) { // add this event listener after append fileModal to DOM
         fileModal.animate({
             left: '-50vw'
-        }, 500);
-        setTimeout(() => fileModal.remove(), 593);
+        }, 350);
+        setTimeout(() => fileModal.remove(), 450);
+    });
+
+    $('.new').click(function(e) {
+        if(save)
+        {
+            newFile();
+            $('.close').click();
+        }
+        else 
+        {
+            let saveModal = `<div class="sheet-modal-parent">
+                <div class="sheet-delete-modal">
+                    <div class="sheet-modal-title">${ $('.title').text() }</div>
+                    <div class="sheet-modal-detail-container">
+                        <span class="sheet-modal-detail-title">Do you want to save changes?</span>
+                    </div>
+                    <div class="sheet-modal-confirmation">
+                        <div class="button yes-button">
+                            Yes
+                        </div>
+                        <div class="button no-button">No</div>
+                    </div>
+                </div>
+            </div>`;
+            $('.container').append(saveModal);
+            
+            $('.yes-button').click(function() {
+                // save
+            });
+            
+            $('.no-button').click(function() {
+                $('.sheet-modal-parent').remove();
+                $('.close').click();
+                newFile();
+            });
+        }
     });
 });
+
+function newFile() {
+    emptyPreviousSheet();
+    cellData = {'Sheet 1' : {}};
+    $('.sheet-tab').remove();
+    $('.sheet-tab-container').append(`<div class="sheet-tab selected">Sheet 1</div>`);
+    addSheetEvents();
+    selectedSheet = 'Sheet 1';
+    totalSheets = 1;
+    lastlyAddedSheet = 1;
+    $('.title').text('Untitled - Excel');
+    $('#row-1-col-1').click();
+}
