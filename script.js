@@ -653,6 +653,7 @@ function renameSheet() {
 }
 
 function deleteSheet() {
+    save = false;
     $('.sheet-modal-parent').remove();
     
     // we can delete using index of sheet in cellData
@@ -769,7 +770,7 @@ $('#menu-file').click(function(e) {
                 $('.sheet-modal-parent').remove();
                 saveFile();
                 newFile();
-                $('.close').click();
+                setTimeout(() => $('.close').click(), 1000);
             });
             
             $('.no-button').click(function() {
@@ -781,6 +782,8 @@ $('#menu-file').click(function(e) {
     });
 
     $('.save').click(saveFile);
+
+    $('.open').click(openFile);
 });
 
 function newFile() {
@@ -836,4 +839,50 @@ function sendPopUpError(text) {
     },  4000);
 
     setTimeout(() => popup.remove(), 5000);
+}
+
+function openFile() {
+    let inputFile = $(`<input type="file" class="hidden" />`);
+    $('.container').append(inputFile);
+    inputFile.click();
+    inputFile.change(function(e) {
+        let file = e.target.files[0];
+        $('.title-name').text(file.name.split('.json')[0]);
+        let reader = new FileReader(); // given by browser
+        reader.readAsText(file);
+        reader.onload = () => {
+
+            // after file has been loaded by the reader
+
+            emptyPreviousSheet();
+            cellData = JSON.parse(reader.result);
+            $('.sheet-tab').remove(); // select all sheet-tab and deletes them
+
+            lastlyAddedSheet = 0;
+            let sheets = Object.keys(cellData);
+            for(let i of sheets) 
+            {
+                if(i.includes('Sheet'))
+                {
+                    let splittedSheetArray = i.split('Sheet');
+                    if(splittedSheetArray.length == 2 && !isNaN(splittedSheetArray[1]))
+                    {
+                        lastlyAddedSheet = parseInt(splittedSheetArray[1]);
+                    }
+                }
+
+                $('.sheet-tab-container').append(`<div class="sheet-tab selected">${i}</div>`);
+            }
+
+            addSheetEvents();
+            $('.sheet-tab').removeClass('selected');
+            $($('.sheet-tab')[0]).addClass('selected');
+            selectedSheet = sheets[0];
+            totalSheets = sheets.length;
+            loadCurrentSheet();
+            inputFile.remove();
+        }
+    });
+    
+    $('.close').click();
 }

@@ -533,3 +533,7 @@ body {
     padding: 12px;
     text-align: center;
 }
+
+.hidden {
+    display: none;
+}
