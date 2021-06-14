@@ -842,7 +842,7 @@ function sendPopUpError(text) {
 }
 
 function openFile() {
-    let inputFile = $(`<input type="file" class="hidden" />`);
+    let inputFile = $(`<input type="file" accept=".json" class="hidden" />`);
     $('.container').append(inputFile);
     inputFile.click();
     inputFile.change(function(e) {
@@ -886,3 +886,64 @@ function openFile() {
     
     $('.close').click();
 }
+
+let clipboard = {startCell: [], cellData: {}};
+
+$('#copy,#cut').click(function(e) {
+    
+    let selectedCellsArr = $('.input-cell.selected');
+
+    // for handling edge case when user has not selected any cell
+    if(selectedCellsArr.length == 0) 
+    {
+        sendPopUpError('Please select a cell first!');
+        return;
+    }
+
+    clipboard = {startCell: [], cellData: {}};
+    clipboard.startCell = getRowCol(selectedCellsArr[0]);
+    selectedCellsArr.each(function(index, data) {
+        let [rowId, colId] = getRowCol(data);
+        if(cellData[selectedSheet][rowId] && cellData[selectedSheet][rowId][colId])
+        {
+            if(!clipboard.cellData[rowId])
+            {
+                clipboard.cellData[rowId] = {};
+            }
+            clipboard.cellData[rowId][colId] = {...cellData[selectedSheet][rowId][colId]};
+            if($(e.currentTarget).text() == 'content_cut')
+            {
+                $(this).text(''); // remove from UI
+                delete cellData[selectedSheet][rowId][colId]; // remove from DB
+            }
+        }
+    });
+});
+
+$('#paste').click(function(e) {
+    // for handling edge case when user has empty clipboard
+    if(JSON.stringify(clipboard) == JSON.stringify({ startCell: [], cellData: {} }))
+    {
+        sendPopUpError('Nothing to paste!');
+        return;
+    }
+    
+    let startCell = getRowCol($('.input-cell.selected')[0]);
+    let rows = Object.keys(clipboard.cellData);
+    for(let i of rows) 
+    {
+        let cols = Object.keys(clipboard.cellData[i]);
+        for(let j of cols) 
+        {
+           let rowDistance = parseInt(i) - parseInt(clipboard.startCell[0]);
+           let colDistance = parseInt(j) - parseInt(clipboard.startCell[1]);
+           if(!cellData[selectedSheet][startCell[0] + rowDistance])
+           {
+               cellData[selectedSheet][startCell[0] + rowDistance] = {};
+           }
+           cellData[selectedSheet][startCell[0] + rowDistance][startCell[1] + colDistance] = {...clipboard.cellData[i][j]};
+        }
+    }
+
+    loadCurrentSheet(); // for showing on UI
+});
